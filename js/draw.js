@@ -1,3 +1,177 @@
+function drawEntities(){
+	if (isometric){
+		for ( var i = 0; i < entities.length; i++ ) {
+			var p = entities[i];			
+			drawCube(p);
+            //drawScreenSquare(p);
+		}
+	}
+	else{
+		//draw 2d
+		for ( var i = 0; i < entities.length; i++ ) {
+			var p = entities[i];			
+			drawWorldSquare(p);
+		}
+	}
+}
+
+function drawCube(object){
+
+    var heightOffset = Math.abs(Math.sin(object.jumpStep) * object.jumpHeight);
+    // draw shadow
+    var shadowSquare = {};
+    shadowSquare.pos = worldToScreen(object.pos);
+	shadowSquare.points = [];
+	for (var i = 0; i < object.points.length; i++){
+		shadowSquare.points[i] = worldToScreen(object.points[i]);
+	}
+	ctx.beginPath();
+	
+	ctx.beginPath();
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    
+	ctx.moveTo(shadowSquare.pos.x + shadowSquare.points[0].x - camera.x, shadowSquare.pos.y + shadowSquare.points[0].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[1].x - camera.x, shadowSquare.pos.y + shadowSquare.points[1].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[2].x - camera.x, shadowSquare.pos.y + shadowSquare.points[2].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[3].x - camera.x, shadowSquare.pos.y + shadowSquare.points[3].y - camera.y);
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[0].x - camera.x, shadowSquare.pos.y + shadowSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
+    // draw bottom
+    var bottomSquare = {};
+    bottomSquare.pos = worldToScreen(object.pos);
+    bottomSquare.pos.y -= heightOffset;
+	bottomSquare.points = [];
+	for (var i = 0; i < object.points.length; i++){
+		bottomSquare.points[i] = worldToScreen(object.points[i]);
+	}
+	ctx.beginPath();
+	
+	ctx.beginPath();
+    ctx.strokeStyle = object.strokeColor;
+    ctx.fillStyle = object.fillColor;
+    
+	ctx.moveTo(bottomSquare.pos.x + bottomSquare.points[0].x - camera.x, bottomSquare.pos.y + bottomSquare.points[0].y - camera.y);   
+	ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[1].x - camera.x, bottomSquare.pos.y + bottomSquare.points[1].y - camera.y);   
+	ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[2].x - camera.x, bottomSquare.pos.y + bottomSquare.points[2].y - camera.y);   
+	ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[3].x - camera.x, bottomSquare.pos.y + bottomSquare.points[3].y - camera.y);
+	ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[0].x - camera.x, bottomSquare.pos.y + bottomSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
+    //Draw top
+    var topSquare = {};
+    topSquare.pos = worldToScreen(object.pos);
+    topSquare.pos.y -= object.height;
+    topSquare.pos.y -= heightOffset;
+	topSquare.points = [];
+	for (var i = 0; i < object.points.length; i++){
+		topSquare.points[i] = worldToScreen(object.points[i]);
+	}
+	ctx.beginPath();
+	
+	ctx.beginPath();
+    ctx.strokeStyle = object.strokeColor;
+    ctx.fillStyle = object.fillColor;
+    
+	ctx.moveTo(topSquare.pos.x + topSquare.points[0].x - camera.x, topSquare.pos.y + topSquare.points[0].y - camera.y);   
+	ctx.lineTo(topSquare.pos.x + topSquare.points[1].x - camera.x, topSquare.pos.y + topSquare.points[1].y - camera.y);   
+	ctx.lineTo(topSquare.pos.x + topSquare.points[2].x - camera.x, topSquare.pos.y + topSquare.points[2].y - camera.y);   
+	ctx.lineTo(topSquare.pos.x + topSquare.points[3].x - camera.x, topSquare.pos.y + topSquare.points[3].y - camera.y);
+	ctx.lineTo(topSquare.pos.x + topSquare.points[0].x - camera.x, topSquare.pos.y + topSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
+    // draw left
+    // 0 = left 1 = bottom
+
+	ctx.beginPath();
+    ctx.strokeStyle = "rgba(0, 0, 225, 1)";
+    ctx.fillStyle = "rgba(0, 0, 225, 1)";
+    
+	ctx.moveTo(bottomSquare.pos.x + bottomSquare.points[0].x - camera.x, bottomSquare.pos.y + bottomSquare.points[0].y - camera.y);
+    ctx.lineTo(topSquare.pos.x + topSquare.points[0].x - camera.x, topSquare.pos.y + topSquare.points[0].y - camera.y);
+    ctx.lineTo(topSquare.pos.x + topSquare.points[1].x - camera.x, topSquare.pos.y + topSquare.points[1].y - camera.y);
+    ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[1].x - camera.x, bottomSquare.pos.y + bottomSquare.points[1].y - camera.y);
+    ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[0].x - camera.x, bottomSquare.pos.y + bottomSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
+    // draw right
+    // 0 = left 1 = bottom 2 = right 3 = top
+
+	ctx.beginPath();
+    ctx.strokeStyle = "rgba(0, 0, 200, 1)";
+    ctx.fillStyle = "rgba(0, 0, 200, 1)";
+    
+	ctx.moveTo(bottomSquare.pos.x + bottomSquare.points[1].x - camera.x, bottomSquare.pos.y + bottomSquare.points[1].y - camera.y);
+    ctx.lineTo(topSquare.pos.x + topSquare.points[1].x - camera.x, topSquare.pos.y + topSquare.points[1].y - camera.y);
+    ctx.lineTo(topSquare.pos.x + topSquare.points[2].x - camera.x, topSquare.pos.y + topSquare.points[2].y - camera.y);
+    ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[2].x - camera.x, bottomSquare.pos.y + bottomSquare.points[2].y - camera.y);
+    ctx.lineTo(bottomSquare.pos.x + bottomSquare.points[1].x - camera.x, bottomSquare.pos.y + bottomSquare.points[1].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
+    
+    
+    
+}
+
+function drawScreenSquare (square, heightOffSet) {
+	var screenSquare = {};
+    screenSquare.pos = worldToScreen(square.pos);
+    screenSquare.pos.y += heightOffSet;
+	screenSquare.points = [];
+	for (var i = 0; i < square.points.length; i++){
+		screenSquare.points[i] = worldToScreen(square.points[i]);
+	}
+	ctx.beginPath();
+	
+	ctx.beginPath();
+    ctx.strokeStyle = square.strokeColor;
+    ctx.fillStyle = square.fillColor;
+    
+	ctx.moveTo(screenSquare.pos.x + screenSquare.points[0].x - camera.x, screenSquare.pos.y + screenSquare.points[0].y - camera.y);   
+	ctx.lineTo(screenSquare.pos.x + screenSquare.points[1].x - camera.x, screenSquare.pos.y + screenSquare.points[1].y - camera.y);   
+	ctx.lineTo(screenSquare.pos.x + screenSquare.points[2].x - camera.x, screenSquare.pos.y + screenSquare.points[2].y - camera.y);   
+	ctx.lineTo(screenSquare.pos.x + screenSquare.points[3].x - camera.x, screenSquare.pos.y + screenSquare.points[3].y - camera.y);
+	ctx.lineTo(screenSquare.pos.x + screenSquare.points[0].x - camera.x, screenSquare.pos.y + screenSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+
+}
+
+function drawWorldSquare (square) {
+    ctx.beginPath();
+    ctx.strokeStyle = square.strokeColor;
+    ctx.fillStyle = square.fillColor;
+
+	ctx.moveTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[1].x - camera.x, square.pos.y + square.points[1].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[2].x - camera.x, square.pos.y + square.points[2].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[3].x - camera.x, square.pos.y + square.points[3].y - camera.y);
+	ctx.lineTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+}
+
+
 function drawWorldCircle (circle) {
 	ctx.beginPath();
 	var radius = circle.r;

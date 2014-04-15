@@ -20,13 +20,30 @@ test.src= "img/test.png";
 tower = new Image();
 tower.src= "img/tower.png";
 
+function updateEntities(){
+	if (entities.length > 0){
+		for ( var i = 0; i < entities.length; i++ ) {
+			
+			//check health of enemies
+			var p = entities[i];
+			if (p.health <= 0){
+				entities.splice(i, 1);
+			}
+			p.pos.x += p.speed;
+			//p.pos.y += p.speed;
+            p.jumpStep += p.jumpSpeed;
+            //p.recalc();
+		}
+	}
+}
+
 
 // Game loop draw function
 function draw() {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	drawMap();
 	//drawBullets();
-    drawEnemies();
+    drawEntities();
 	//drawTowers();
 	drawMenu();
 	
@@ -39,7 +56,8 @@ function update() {
 	//updateTowers();
 	updateMap();
 	//updateBullets();
-	updateEnemies();
+	//updateEnemies();
+    updateEntities();
 }
 
 //TODO ändra till requestanimationframe?

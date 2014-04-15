@@ -1,6 +1,6 @@
 // Create enemies
-var enemies = [];
 
+/*
 function createEnemy (pos, type){
 	var radius = 1*blockSize/2;
 	var circle = new SAT.Circle(new SAT.Vector(pos.x,pos.y), radius);
@@ -14,72 +14,9 @@ function createEnemy (pos, type){
 	circle.type = type;
 	entities.push(circle);
 }
-/*function createEnemy(pos, type){
-	switch(type){
-		case "red":
-			enemies.push({
-				x: pos.x,
-				y: pos.y,
-				vx: 0,
-				vy: 0,
-				path: [],
-				target: mapTwoD[2][2],
-				radius: 15,
-				speed: 2,
-				health: 50,
-				totalHealth: 50,
-				color: "rgba(255, 0, 0, .5)"
-			});
-			break;
-		case "blue":
-			enemies.push({
-				x: pos[0],
-				y: pos[1],
-				vx: 0,
-				vy: 0,
-				path: [],
-				target: mapTwoD[2][2],
-				radius: 15,
-				speed: 2,
-				health: 50,
-				totalHealth: 50,
-				color: "rgba(0, 0, 255, .5)"
-			});
-			break;
-		case "yellow":
-			enemies.push({
-				x: pos[0],
-				y: pos[1],
-				vx: 0,
-				vy: 0,
-				path: [],
-				target: mapTwoD[2][2],
-				radius: 15,
-				speed: 3,
-				health: 50,
-				totalHealth: 50,
-				color: "rgba(255, 255, 0, .5)"
-			});
-			break;
-		default:
-			enemies.push({
-				x: pos[0],
-				y: pos[1],
-				vx: 0,
-				vy: 0,
-				path: [],
-				target: mapTwoD[2][2],
-				radius: 15,
-				speed: 1,
-				health: 50,
-				totalHealth: 50,
-				color: "rgba(255, 255, 255, .5)"
-			});
-			break;
-	}
-}
-*/
+
 createEnemy(map[2][2].pos, "red");	
+*/
 	
 function drawEnemies(){
 	if (isometric){
