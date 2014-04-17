@@ -1,6 +1,6 @@
 var camera = {
-	x: 0,
-	y: 0,
+	x: -canvas.width,
+	y: -canvas.height,
 	vx: 0,
 	vy: 0,
 	speed: 400,

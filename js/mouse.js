@@ -44,7 +44,8 @@ window.onmousedown = function(e) {
 			tile.selected = true;
 		}
 		console.log("Clicked x = " + worldLocation.x + " Clicked y = " + worldLocation.y);
-		console.log(tile);
+		console.log("Clicked maptile: " + tile);
+        console.log("player position x: " + entities[0].pos.x + " player position y: " + entities[0].pos.y);
 	}
 	else {
 		var tileNo = worldToGrid(location);

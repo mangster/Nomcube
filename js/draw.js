@@ -14,11 +14,12 @@ function drawEntities(){
 		}
 	}
 }
-
+var shadow = {}
 function drawCube(object){
 
     var heightOffset = Math.abs(Math.sin(object.jumpStep) * object.jumpHeight);
     // draw shadow
+    /*
     var shadowSquare = {};
     shadowSquare.pos = worldToScreen(object.pos);
 	shadowSquare.points = [];
@@ -40,15 +41,59 @@ function drawCube(object){
 	ctx.stroke();
 	ctx.fill();
 	ctx.closePath();
+    */
+    //var shadow = {};
+    var cellPoints = [];
+    
+    cellPoints = getSquareCornersWorld(object.pos.x, object.pos.y, object.width);
+    var shadow = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
+      new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
+      new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),
+      new SAT.Vector(cellPoints.point3.x, cellPoints.point3.y),
+      new SAT.Vector(cellPoints.point4.x, cellPoints.point4.y)
+    ]);
+    
+    var shadowSquare = {};
+    shadowSquare.pos = worldToScreen(shadow.pos);
+	shadowSquare.points = [];
+    for (var i = 0; i < shadow.points.length; i++){
+        // POINTS ÄR RELATIVA OCH SKA ALDRIG ÄNDRAS, MEN HÄR ÄNDRAS DE
+		shadowSquare.points[i] = worldToScreen(shadow.points[i]);
+	}
+    
+    
+    ctx.beginPath();
+	
+	ctx.beginPath();
+    ctx.strokeStyle = "rgba(0, 0, 0, 0.2)";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+    
+	ctx.moveTo(shadowSquare.pos.x + shadowSquare.points[0].x - camera.x, shadowSquare.pos.y + shadowSquare.points[0].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[1].x - camera.x, shadowSquare.pos.y + shadowSquare.points[1].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[2].x - camera.x, shadowSquare.pos.y + shadowSquare.points[2].y - camera.y);   
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[3].x - camera.x, shadowSquare.pos.y + shadowSquare.points[3].y - camera.y);
+	ctx.lineTo(shadowSquare.pos.x + shadowSquare.points[0].x - camera.x, shadowSquare.pos.y + shadowSquare.points[0].y - camera.y);
+
+	ctx.stroke();
+	ctx.fill();
+	ctx.closePath();
+    
     
     // draw bottom
     var bottomSquare = {};
     bottomSquare.pos = worldToScreen(object.pos);
+    // jump
     bottomSquare.pos.y -= heightOffset;
 	bottomSquare.points = [];
 	for (var i = 0; i < object.points.length; i++){
 		bottomSquare.points[i] = worldToScreen(object.points[i]);
 	}
+    
+    if (false){
+        console.log(shadowSquare.points[0]);
+        console.log("and ");
+        console.log(bottomSquare.points[0]);
+    }
 	ctx.beginPath();
 	
 	ctx.beginPath();
@@ -129,10 +174,9 @@ function drawCube(object){
     
 }
 
-function drawScreenSquare (square, heightOffSet) {
+function drawScreenSquare (square) {
 	var screenSquare = {};
     screenSquare.pos = worldToScreen(square.pos);
-    screenSquare.pos.y += heightOffSet;
 	screenSquare.points = [];
 	for (var i = 0; i < square.points.length; i++){
 		screenSquare.points[i] = worldToScreen(square.points[i]);
@@ -213,16 +257,16 @@ function drawWorldTile (tile) {
 	if (tile.selected){
 		ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 		ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-	}
-	ctx.moveTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);   
-	ctx.lineTo(tile.points[1].x - camera.x, tile.points[1].y - camera.y);   
-	ctx.lineTo(tile.points[2].x - camera.x, tile.points[2].y - camera.y);   
-	ctx.lineTo(tile.points[3].x - camera.x, tile.points[3].y - camera.y);
-	ctx.lineTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);
+        ctx.moveTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);   
+        ctx.lineTo(tile.points[1].x - camera.x, tile.points[1].y - camera.y);   
+        ctx.lineTo(tile.points[2].x - camera.x, tile.points[2].y - camera.y);   
+        ctx.lineTo(tile.points[3].x - camera.x, tile.points[3].y - camera.y);
+        ctx.lineTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);
 
-	ctx.stroke();
-	ctx.fill();
-	ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+	}
 }
 
 
@@ -259,16 +303,17 @@ function drawScreenTile (tile) {
 	if (tile.selected){
 		ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 		ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-	}
-	ctx.moveTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);   
-	ctx.lineTo(screenTile.points[1].x - camera.x, screenTile.points[1].y - camera.y);   
-	ctx.lineTo(screenTile.points[2].x - camera.x, screenTile.points[2].y - camera.y);   
-	ctx.lineTo(screenTile.points[3].x - camera.x, screenTile.points[3].y - camera.y);
-	ctx.lineTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);
+        ctx.moveTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);   
+        ctx.lineTo(screenTile.points[1].x - camera.x, screenTile.points[1].y - camera.y);   
+        ctx.lineTo(screenTile.points[2].x - camera.x, screenTile.points[2].y - camera.y);   
+        ctx.lineTo(screenTile.points[3].x - camera.x, screenTile.points[3].y - camera.y);
+        ctx.lineTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);
 
-	ctx.stroke();
-	ctx.fill();
-	ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+	}
+    
 }
 
 function drawScreenEnemy (enemy) {

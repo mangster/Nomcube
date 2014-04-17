@@ -32,7 +32,18 @@ function updateEntities(){
 			p.pos.x += p.speed;
 			//p.pos.y += p.speed;
             p.jumpStep += p.jumpSpeed;
-            //p.recalc();
+            
+            for (var i = 0; i < map.length; i++){
+                for (var j = 0; j < map[i].length; j++){
+                    var tile = map[i][j];
+                    var response = new SAT.Response();
+                    var collided = SAT.testPolygonPolygon(p, tile, response);
+                    if (collided && isometric){
+                        tile.selected = true;
+                        console.log(response.b.points[0]);
+                    }
+                }
+            }
 		}
 	}
 }

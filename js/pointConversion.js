@@ -68,6 +68,56 @@ function getWorldSquareBoundaries(theCellX, theCellY) {
 	return { "point1": p1, "point2": p2, "point3": p3, "point4": p4, "center": center };
 }
 
+function getSquareCornersWorld(xCenter, yCenter, width) {
+	var radius = width/2;
+    
+    //bottom left
+	var p1 = {"x": -radius, "y": radius};
+	
+	//bottom right
+	var p2 = {"x": radius, "y": radius};
+	
+	//top right
+	var p3 = {"x": radius, "y": -radius};
+
+	//top left
+	var p4 = {"x": -radius, "y": -radius};
+	
+	//center
+	var center = {"x": xCenter, "y": yCenter};
+
+	return { "point1": p1, "point2": p2, "point3": p3, "point4": p4, "center": center };
+}
+
+/*function getSquareCornersWorld(theCellX, theCellY, width) {
+	//bottom left
+	var aOffset = { "offsetX": (width * -1) / 2, "offsetY": (width * -1) / 2 };
+	var aCell = { "x": theCellX, "y": theCellY };
+	var p1 = {"x": aCell.x + aOffset.offsetX, "y": aCell.y - aOffset.offsetY};
+	
+	//bottom right
+	aOffset = { "offsetX": (width) / 2, "offsetY": (width * -1) / 2 };
+	//var p2 = getScreenCoords(aCell, aOffset);
+	var p2 = {"x": aCell.x + aOffset.offsetX, "y": aCell.y - aOffset.offsetY};
+	
+
+	//top right
+	aOffset = { "offsetX": (width) / 2, "offsetY": (width) / 2 };
+	//var p3 = getScreenCoords(aCell, aOffset);
+	var p3 = {"x": aCell.x + aOffset.offsetX, "y": aCell.y - aOffset.offsetY};
+
+	//top left
+	aOffset = { "offsetX": (width * -1) / 2, "offsetY": (width) / 2 };
+	//var p4 = getScreenCoords(aCell, aOffset);
+	var p4 = {"x": aCell.x + aOffset.offsetX, "y": aCell.y - aOffset.offsetY};
+	
+	//center
+	aOffset = { "offsetX": 0, "offsetY": 0 };
+	var center = {"x": aCell.x + aOffset.offsetX, "y": aCell.y - aOffset.offsetY};
+
+	return { "point1": p1, "point2": p2, "point3": p3, "point4": p4, "center": center };
+}*/
+
 function getSquareCorners(theCellX, theCellY, width) {
 	//bottom right
 	var aOffset = { "offsetX": (width * -1) / 2, "offsetY": (width * -1) / 2 };
