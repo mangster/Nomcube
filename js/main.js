@@ -21,26 +21,40 @@ tower = new Image();
 tower.src= "img/tower.png";
 
 function updateEntities(){
+    for (var i = 0; i < map.length; i++){
+                for (var j = 0; j < map[i].length; j++){
+                    var tile = map[i][j];
+                    tile.collided = false;
+                }
+    }
 	if (entities.length > 0){
-		for ( var i = 0; i < entities.length; i++ ) {
+		for (var k = 0; k < entities.length ; k++ ) {
 			
-			//check health of enemies
-			var p = entities[i];
-			if (p.health <= 0){
-				entities.splice(i, 1);
-			}
-			p.pos.x += p.speed;
-			//p.pos.y += p.speed;
+			
+			var p = entities[k];
+            
+            //check health of enemies
+			/*if (p.health <= 0){
+				entities.splice(k, 1);
+			}*/
+            if (p.pos.x <= 0 || p.pos.x > mapWidth - 10){
+                p.vx *= -1
+            }
+            if (p.pos.y <= 0 || p.pos.y > mapHeight - 10){
+                p.vy *= -1
+            }
+			p.pos.x += p.vx;
+			p.pos.y += p.vy;
             p.jumpStep += p.jumpSpeed;
+            
             
             for (var i = 0; i < map.length; i++){
                 for (var j = 0; j < map[i].length; j++){
                     var tile = map[i][j];
                     var response = new SAT.Response();
                     var collided = SAT.testPolygonPolygon(p, tile, response);
-                    if (collided && isometric){
-                        tile.selected = true;
-                        console.log(response.b.points[0]);
+                    if (collided){
+                        tile.collided = true;
                     }
                 }
             }

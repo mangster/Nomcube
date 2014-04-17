@@ -10,7 +10,8 @@ for (var i = 0; i < grid.nodes.length; i++){
 	row = [];
 	for (var j = 0; j < grid.nodes[i].length; j++){
 		var tile = grid.nodes[i][j];
-		var cellPoints = getWorldSquareBoundaries(tile.x, tile.y);
+        var cellPoints = getSquareCornersWorld(tile.x * blockSize, tile.y * blockSize, blockSize);
+		//var cellPoints = getWorldSquareBoundaries(tile.x, tile.y);
 		var polygon = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
 		  new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
 		  new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),

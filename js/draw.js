@@ -230,9 +230,9 @@ function drawWorldCircle (circle) {
 }
 
 function drawWorldTile (tile) {
-	ctx.beginPath();
-	
-	if (tile.type === 1){
+    ctx.beginPath();
+    
+    if (tile.type === 1){
 		ctx.strokeStyle = "rgba(0, 200, 0, 1)";
 		ctx.fillStyle = "rgba(0, 255, 0, 1)";
 	}
@@ -244,24 +244,38 @@ function drawWorldTile (tile) {
 		ctx.strokeStyle = "red";
 		ctx.fillStyle = "red";
 	}
-	ctx.moveTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);   
-	ctx.lineTo(tile.points[1].x - camera.x, tile.points[1].y - camera.y);   
-	ctx.lineTo(tile.points[2].x - camera.x, tile.points[2].y - camera.y);   
-	ctx.lineTo(tile.points[3].x - camera.x, tile.points[3].y - camera.y);
-	ctx.lineTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);
+
+	ctx.moveTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);   
+	ctx.lineTo(tile.pos.x + tile.points[1].x - camera.x, tile.pos.y + tile.points[1].y - camera.y);   
+	ctx.lineTo(tile.pos.x + tile.points[2].x - camera.x, tile.pos.y + tile.points[2].y - camera.y);   
+	ctx.lineTo(tile.pos.x + tile.points[3].x - camera.x, tile.pos.y + tile.points[3].y - camera.y);
+	ctx.lineTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);
 
 	ctx.stroke();
 	ctx.fill();
 	ctx.closePath();
-	
-	if (tile.selected){
+    
+    if (tile.selected){
 		ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 		ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-        ctx.moveTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);   
-        ctx.lineTo(tile.points[1].x - camera.x, tile.points[1].y - camera.y);   
-        ctx.lineTo(tile.points[2].x - camera.x, tile.points[2].y - camera.y);   
-        ctx.lineTo(tile.points[3].x - camera.x, tile.points[3].y - camera.y);
-        ctx.lineTo(tile.points[0].x - camera.x, tile.points[0].y - camera.y);
+        ctx.moveTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[1].x - camera.x, tile.pos.y + tile.points[1].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[2].x - camera.x, tile.pos.y + tile.points[2].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[3].x - camera.x, tile.pos.y + tile.points[3].y - camera.y);
+        ctx.lineTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);
+
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+	}
+    if (tile.collided){
+		ctx.strokeStyle = "rgba(255, 0, 0, 0)";
+		ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+        ctx.moveTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[1].x - camera.x, tile.pos.y + tile.points[1].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[2].x - camera.x, tile.pos.y + tile.points[2].y - camera.y);   
+        ctx.lineTo(tile.pos.x + tile.points[3].x - camera.x, tile.pos.y + tile.points[3].y - camera.y);
+        ctx.lineTo(tile.pos.x + tile.points[0].x - camera.x, tile.pos.y + tile.points[0].y - camera.y);
 
         ctx.stroke();
         ctx.fill();
@@ -271,14 +285,18 @@ function drawWorldTile (tile) {
 
 
 function drawScreenTile (tile) {
-	var screenTile = {}
-	screenTile.points = [];
+    
+    var square = {};
+    square.pos = worldToScreen(tile.pos);
+	square.points = [];
 	for (var i = 0; i < tile.points.length; i++){
-		screenTile.points[i] = worldToScreen(tile.points[i]);
+		square.points[i] = worldToScreen(tile.points[i]);
 	}
+    
 	ctx.beginPath();
 	
-	if (tile.type === 1){
+	ctx.beginPath();
+    if (tile.type === 1){
 		ctx.strokeStyle = "rgba(0, 200, 0, 1)";
 		ctx.fillStyle = "rgba(0, 255, 0, 1)";
 	}
@@ -290,37 +308,44 @@ function drawScreenTile (tile) {
 		ctx.strokeStyle = "red";
 		ctx.fillStyle = "red";
 	}
-	ctx.moveTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);   
-	ctx.lineTo(screenTile.points[1].x - camera.x, screenTile.points[1].y - camera.y);   
-	ctx.lineTo(screenTile.points[2].x - camera.x, screenTile.points[2].y - camera.y);   
-	ctx.lineTo(screenTile.points[3].x - camera.x, screenTile.points[3].y - camera.y);
-	ctx.lineTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);
+    
+	ctx.moveTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[1].x - camera.x, square.pos.y + square.points[1].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[2].x - camera.x, square.pos.y + square.points[2].y - camera.y);   
+	ctx.lineTo(square.pos.x + square.points[3].x - camera.x, square.pos.y + square.points[3].y - camera.y);
+	ctx.lineTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);
 
 	ctx.stroke();
 	ctx.fill();
 	ctx.closePath();
-	
-	if (tile.selected){
+    
+    if (tile.selected){
 		ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 		ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-        ctx.moveTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);   
-        ctx.lineTo(screenTile.points[1].x - camera.x, screenTile.points[1].y - camera.y);   
-        ctx.lineTo(screenTile.points[2].x - camera.x, screenTile.points[2].y - camera.y);   
-        ctx.lineTo(screenTile.points[3].x - camera.x, screenTile.points[3].y - camera.y);
-        ctx.lineTo(screenTile.points[0].x - camera.x, screenTile.points[0].y - camera.y);
+        ctx.moveTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[1].x - camera.x, square.pos.y + square.points[1].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[2].x - camera.x, square.pos.y + square.points[2].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[3].x - camera.x, square.pos.y + square.points[3].y - camera.y);
+        ctx.lineTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);
 
         ctx.stroke();
         ctx.fill();
         ctx.closePath();
 	}
     
-}
+    if (tile.collided){
+		ctx.strokeStyle = "rgba(255, 0, 0, 0)";
+		ctx.fillStyle = "rgba(255, 0, 0, 0.8)";
+        ctx.moveTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[1].x - camera.x, square.pos.y + square.points[1].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[2].x - camera.x, square.pos.y + square.points[2].y - camera.y);   
+        ctx.lineTo(square.pos.x + square.points[3].x - camera.x, square.pos.y + square.points[3].y - camera.y);
+        ctx.lineTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);
 
-function drawScreenEnemy (enemy) {
-	var screenPos = worldToScreen(enemy.pos); 
-	var height = (enemy.r) * 0.7*2;
-	var width = (enemy.r) * 2*0.7*2;
-	drawEllipseByCenter(screenPos.x - camera.x, screenPos.y-camera.y, width, height);
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+	}
 }
 
 function drawEllipseByCenter(cx, cy, w, h) {
