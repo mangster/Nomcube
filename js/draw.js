@@ -1,18 +1,9 @@
 function drawEntities(){
-	if (isometric){
-		for ( var i = 0; i < entities.length; i++ ) {
-			var p = entities[i];			
-			drawCube(p);
-            //drawScreenSquare(p);
-		}
-	}
-	else{
-		//draw 2d
-		for ( var i = 0; i < entities.length; i++ ) {
-			var p = entities[i];			
-			drawWorldSquare(p);
-		}
-	}
+    for ( var i = 0; i < entities.length; i++ ) {
+        var p = entities[i];
+        p.draw();
+        //drawWorldSquare(p);
+    }
 }
 var shadow = {}
 function drawCube(object){
@@ -45,7 +36,7 @@ function drawCube(object){
     //var shadow = {};
     var cellPoints = [];
     
-    cellPoints = getSquareCornersWorld(object.pos.x, object.pos.y, object.width);
+    cellPoints = getSquareCornersWorld(object.hitBox.pos.x, object.hitBox.pos.y, object.width);
     var shadow = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
       new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
       new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),
@@ -57,7 +48,6 @@ function drawCube(object){
     shadowSquare.pos = worldToScreen(shadow.pos);
 	shadowSquare.points = [];
     for (var i = 0; i < shadow.points.length; i++){
-        // POINTS ÄR RELATIVA OCH SKA ALDRIG ÄNDRAS, MEN HÄR ÄNDRAS DE
 		shadowSquare.points[i] = worldToScreen(shadow.points[i]);
 	}
     
@@ -81,20 +71,13 @@ function drawCube(object){
     
     // draw bottom
     var bottomSquare = {};
-    bottomSquare.pos = worldToScreen(object.pos);
+    bottomSquare.pos = worldToScreen(object.hitBox.pos);
     // jump
     bottomSquare.pos.y -= heightOffset;
 	bottomSquare.points = [];
-	for (var i = 0; i < object.points.length; i++){
-		bottomSquare.points[i] = worldToScreen(object.points[i]);
+	for (var i = 0; i < object.hitBox.points.length; i++){
+		bottomSquare.points[i] = worldToScreen(object.hitBox.points[i]);
 	}
-    
-    if (false){
-        console.log(shadowSquare.points[0]);
-        console.log("and ");
-        console.log(bottomSquare.points[0]);
-    }
-	ctx.beginPath();
 	
 	ctx.beginPath();
     ctx.strokeStyle = object.strokeColor;
@@ -112,12 +95,12 @@ function drawCube(object){
     
     //Draw top
     var topSquare = {};
-    topSquare.pos = worldToScreen(object.pos);
+    topSquare.pos = worldToScreen(object.hitBox.pos);
     topSquare.pos.y -= object.height;
     topSquare.pos.y -= heightOffset;
 	topSquare.points = [];
-	for (var i = 0; i < object.points.length; i++){
-		topSquare.points[i] = worldToScreen(object.points[i]);
+	for (var i = 0; i < object.hitBox.points.length; i++){
+		topSquare.points[i] = worldToScreen(object.hitBox.points[i]);
 	}
 	ctx.beginPath();
 	
@@ -204,11 +187,11 @@ function drawWorldSquare (square) {
     ctx.strokeStyle = square.strokeColor;
     ctx.fillStyle = square.fillColor;
 
-	ctx.moveTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);   
-	ctx.lineTo(square.pos.x + square.points[1].x - camera.x, square.pos.y + square.points[1].y - camera.y);   
-	ctx.lineTo(square.pos.x + square.points[2].x - camera.x, square.pos.y + square.points[2].y - camera.y);   
-	ctx.lineTo(square.pos.x + square.points[3].x - camera.x, square.pos.y + square.points[3].y - camera.y);
-	ctx.lineTo(square.pos.x + square.points[0].x - camera.x, square.pos.y + square.points[0].y - camera.y);
+	ctx.moveTo(square.hitBox.pos.x + square.hitBox.points[0].x - camera.x, square.hitBox.pos.y + square.hitBox.points[0].y - camera.y);   
+	ctx.lineTo(square.hitBox.pos.x + square.hitBox.points[1].x - camera.x, square.hitBox.pos.y + square.hitBox.points[1].y - camera.y);   
+	ctx.lineTo(square.hitBox.pos.x + square.hitBox.points[2].x - camera.x, square.hitBox.pos.y + square.hitBox.points[2].y - camera.y);   
+	ctx.lineTo(square.hitBox.pos.x + square.hitBox.points[3].x - camera.x, square.hitBox.pos.y + square.hitBox.points[3].y - camera.y);
+	ctx.lineTo(square.hitBox.pos.x + square.hitBox.points[0].x - camera.x, square.hitBox.pos.y + square.hitBox.points[0].y - camera.y);
 
 	ctx.stroke();
 	ctx.fill();

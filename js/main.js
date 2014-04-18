@@ -37,14 +37,14 @@ function updateEntities(){
 			/*if (p.health <= 0){
 				entities.splice(k, 1);
 			}*/
-            if (p.pos.x <= 0 || p.pos.x > mapWidth - 10){
+            if (p.hitBox.pos.x <= 0 || p.hitBox.pos.x > mapWidth - 10){
                 p.vx *= -1
             }
-            if (p.pos.y <= 0 || p.pos.y > mapHeight - 10){
+            if (p.hitBox.pos.y <= 0 || p.hitBox.pos.y > mapHeight - 10){
                 p.vy *= -1
             }
-			p.pos.x += p.vx;
-			p.pos.y += p.vy;
+			p.hitBox.pos.x += p.vx;
+			p.hitBox.pos.y += p.vy;
             p.jumpStep += p.jumpSpeed;
             
             
@@ -52,7 +52,7 @@ function updateEntities(){
                 for (var j = 0; j < map[i].length; j++){
                     var tile = map[i][j];
                     var response = new SAT.Response();
-                    var collided = SAT.testPolygonPolygon(p, tile, response);
+                    var collided = SAT.testPolygonPolygon(p.hitBox, tile, response);
                     if (collided){
                         tile.collided = true;
                     }
