@@ -1,15 +1,17 @@
 var entityHandler = new EntityHandler();
+var player = entityHandler.createPlayer();
 
 function EntityHandler(){
     
     this.entities = [];
     this.createEnemy = function(){
         //create enemy
-        var enemy = new Entity("enemy", 15, 15, 50, 50, 90);
+        var enemy = new Entity("enemy", 15, 15, 50, 50, 90, 2);
         this.entities.push(enemy);
     }
     this.createPlayer = function(){
-        //create player
+        player = new Entity("player", 200, 200, 30, 50, 90, 5);
+        this.entities.push(player);
     }
     this.update = function(){
         for ( var i = 0; i < entityHandler.entities.length; i++ ) {
@@ -40,7 +42,7 @@ function EntityHandler(){
 }
 setInterval(function(){entityHandler.createEnemy()},1000);
 
-function Entity (type, xPos, yPos, width, height, direction){
+function Entity (type, xPos, yPos, width, height, direction, speed){
     var cellPoints = getSquareCornersWorld(xPos, yPos, width);
     this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
       new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
@@ -53,7 +55,7 @@ function Entity (type, xPos, yPos, width, height, direction){
     this.screenHeight = worldDistanceToScreenDistance(height);
     this.width = width;
 
-    this.speed = 2;
+    this.speed = speed;
     this.direction = direction;
     this.theta = this.direction * Math.PI / 180;
     this.vx = this.speed * Math.cos(this.theta);
@@ -62,24 +64,66 @@ function Entity (type, xPos, yPos, width, height, direction){
     this.jumpHeight = this.height/2;
     this.jumpStep = Math.random();
     this.jumpSpeed = 0.2;
-	//this.speed = Math.random()+1;
+
 	this.type = type;
-    this.fillColor = "rgba(0, 0, 255, 1)";
-    this.strokeColor = "rgba(0, 0, 255, 1)";
-    this.leftColor = "rgba(0, 0, 225, 1)";
-    this.rightColor = "rgba(0, 0, 200, 1)";
-    this.shadowColor = "rgba(0, 0, 0, 0.2)";
+    if (this.type == "enemy"){
+        this.fillColor = "rgba(0, 0, 255, 1)";
+        this.strokeColor = "rgba(0, 0, 255, 1)";
+        this.leftColor = "rgba(0, 0, 225, 1)";
+        this.rightColor = "rgba(0, 0, 200, 1)";
+        this.shadowColor = "rgba(0, 0, 0, 0.2)";
+    }
+    else if (this.type == "player"){
+        this.fillColor = "rgba(255, 0, 0, 1)";
+        this.strokeColor = "rgba(255, 0, 0, 1)";
+        this.leftColor = "rgba(225, 0, 0, 1)";
+        this.rightColor = "rgba(200, 0, 0, 1)";
+        this.shadowColor = "rgba(0, 0, 0, 0.2)";
+    }
+    else{
+        this.fillColor = "rgba(0, 0, 0, 1)";
+        this.strokeColor = "rgba(0, 0, 0, 1)";
+        this.leftColor = "rgba(0, 0, 0, 1)";
+        this.rightColor = "rgba(0, 0, 0, 1)";
+        this.shadowColor = "rgba(0, 0, 0, 0.2)";
+    }
     
     this.move = function(){
         //move the entity
         //TODO GÖR ENKLARE FÖR ENEMIES SOM ALLTID RÖR SIG I EN RIKTNING
-        this.theta = this.direction * Math.PI / 180;
-        this.vx = this.speed * Math.cos(this.theta);
-        this.vy = this.speed * Math.sin (this.theta);
-        
-        this.hitBox.pos.x += this.vx;
-        this.hitBox.pos.y += this.vy;
-        this.jumpStep += this.jumpSpeed;
+        if (this.type == "enemy"){
+            this.hitBox.pos.x += this.vx;
+            this.hitBox.pos.y += this.vy;
+            this.jumpStep += this.jumpSpeed;
+        }
+        else if (this.type == "player"){
+            if(keyY != 0 || keyX != 0){
+                // get direction
+                var screenDirection = Math.atan2(keyY,keyX);
+                screenDirection *= 180/Math.PI;
+                //convert to world direction
+                this.direction = screenDirection - 45;
+                
+                //move
+                this.theta = this.direction * Math.PI / 180;
+                this.vx = this.speed * Math.cos(this.theta);
+                this.vy = this.speed * Math.sin (this.theta);
+                this.hitBox.pos.x += this.vx;
+                this.hitBox.pos.y += this.vy;
+                
+                var cameraPos = {};
+                cameraPos["x"] = this.hitBox.pos.x;
+                cameraPos["y"] = this.hitBox.pos.y;
+                cameraPos = worldToScreen(cameraPos);
+                
+                camera.x = cameraPos["x"] -canvas.width/2;
+                camera.y = cameraPos["y"] -canvas.height/2;
+            }
+            this.jumpStep += this.jumpSpeed;
+        }
+        else{
+            console.log("invalid entity type, cant move ffs");
+        }      
     }
     
     // Draw the entity

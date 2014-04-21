@@ -62,7 +62,7 @@ window.onmousedown = function(e) {
 			tile.selected = true;
             entity = new Entity("player", location.x, location.y, Math.random()*40, Math.random()*60);
 		}
-		//console.log("Clicked x = " + location.x + " Clicked y = " + location.y);
+		console.log("Clicked x = " + location.x + " Clicked y = " + location.y);
 		//console.log(tile);
 	}
 	
