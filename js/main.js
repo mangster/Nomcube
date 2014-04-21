@@ -13,62 +13,13 @@ var mapWidth = 1000;
 var mapHeight = 1000;
 var isometric = true;
 
-var entities = [];
-
-test = new Image();
-test.src= "img/test.png";
-tower = new Image();
-tower.src= "img/tower.png";
-
-function updateEntities(){
-    for (var i = 0; i < map.length; i++){
-                for (var j = 0; j < map[i].length; j++){
-                    var tile = map[i][j];
-                    tile.collided = false;
-                }
-    }
-	if (entities.length > 0){
-		for (var k = 0; k < entities.length ; k++ ) {
-			
-			
-			var p = entities[k];
-            
-            //check health of enemies
-			/*if (p.health <= 0){
-				entities.splice(k, 1);
-			}*/
-            if (p.hitBox.pos.x <= 0 || p.hitBox.pos.x > mapWidth - 10){
-                p.vx *= -1
-            }
-            if (p.hitBox.pos.y <= 0 || p.hitBox.pos.y > mapHeight - 10){
-                p.vy *= -1
-            }
-			p.hitBox.pos.x += p.vx;
-			p.hitBox.pos.y += p.vy;
-            p.jumpStep += p.jumpSpeed;
-            
-            
-            for (var i = 0; i < map.length; i++){
-                for (var j = 0; j < map[i].length; j++){
-                    var tile = map[i][j];
-                    var response = new SAT.Response();
-                    var collided = SAT.testPolygonPolygon(p.hitBox, tile, response);
-                    if (collided){
-                        tile.collided = true;
-                    }
-                }
-            }
-		}
-	}
-}
-
-
 // Game loop draw function
 function draw() {
 	ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	drawMap();
 	//drawBullets();
-    drawEntities();
+    //drawEntities();
+    entityHandler.draw();
 	//drawTowers();
 	drawMenu();
 	
@@ -82,7 +33,8 @@ function update() {
 	updateMap();
 	//updateBullets();
 	//updateEnemies();
-    updateEntities();
+    //updateEntities();
+    entityHandler.update();
 }
 
 //TODO ändra till requestanimationframe?

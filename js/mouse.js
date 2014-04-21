@@ -39,13 +39,14 @@ window.onmousedown = function(e) {
 		
 		//TODO ändra koll, så att x och y är inom map length
 		if (map[tileNo.x][tileNo.y]) {
-			console.log(map[tileNo.x][tileNo.y]);
+			//console.log(map[tileNo.x][tileNo.y]);
 			tile = map[tileNo.x][tileNo.y];
 			tile.selected = true;
+            entity = new Entity("player", worldLocation.x, worldLocation.y, Math.random()*40, Math.random()*60);
 		}
-		console.log("Clicked x = " + worldLocation.x + " Clicked y = " + worldLocation.y);
-		console.log(tile);
-        console.log("player position x: " + entities[0].pos.x + " player position y: " + entities[0].pos.y);
+		//console.log("Clicked x = " + worldLocation.x + " Clicked y = " + worldLocation.y);
+		//console.log(tile);
+        //console.log("player position x: " + entities[0].pos.x + " player position y: " + entities[0].pos.y);
 	}
 	else {
 		var tileNo = worldToGrid(location);
@@ -56,12 +57,13 @@ window.onmousedown = function(e) {
 			}
 		}
 		if (map[tileNo.x][tileNo.y]) {
-			console.log(map[tileNo.x][tileNo.y]);
+			//console.log(map[tileNo.x][tileNo.y]);
 			tile = map[tileNo.x][tileNo.y];
 			tile.selected = true;
+            entity = new Entity("player", location.x, location.y, Math.random()*40, Math.random()*60);
 		}
-		console.log("Clicked x = " + location.x + " Clicked y = " + location.y);
-		console.log(tile);
+		//console.log("Clicked x = " + location.x + " Clicked y = " + location.y);
+		//console.log(tile);
 	}
 	
 };

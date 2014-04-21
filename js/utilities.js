@@ -1,3 +1,14 @@
+/*
+// Påbörjad kod för att modda färger
+else if(color instanceof Object &amp;&amp; color.r) {
+                 result = {
+                        r: Math.max(0,Math.min(255,Math.round(parseInt(color.r) - (Math.round((parseInt(color.r))*$percentage_adjuster)  )))),
+                        g: Math.max(0,Math.min(255,Math.round(parseInt(color.g) - (Math.round((parseInt(color.g))*$percentage_adjuster)  )))),
+                        b: Math.max(0,Math.min(255,Math.round(parseInt(color.b) - (Math.round((parseInt(color.b))*$percentage_adjuster)  ))))
+                }
+                return result;
+*/
+
 function randNum( min, max ) {
     return Math.random() * ( max - min ) + min;
 };

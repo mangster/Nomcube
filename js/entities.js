@@ -1,10 +1,46 @@
-function drawEntities(){
-    for ( var i = 0; i < entities.length; i++ ) {
-        var p = entities[i];
-        p.draw();
+var entityHandler = new EntityHandler();
+
+function EntityHandler(){
+    
+    this.entities = [];
+    this.createEnemy = function(){
+        //create enemy
+        var enemy = new Entity("enemy", 15, 15, 50, 50, 90);
+        this.entities.push(enemy);
     }
+    this.createPlayer = function(){
+        //create player
+    }
+    this.update = function(){
+        for ( var i = 0; i < entityHandler.entities.length; i++ ) {
+            var p = entityHandler.entities[i];
+            p.move();
+        }
+        
+        //check collision
+        /*
+        var response = new SAT.Response();
+            var collided = SAT.testPolygonPolygon(p.hitBox, tile, response);
+            if (collided){
+                //tile.collided = true;
+            }
+        */
+    }
+    this.sort = function(){
+        //sort entities by x+y coord
+    }
+    this.draw = function(){
+        //draw all entities
+        for ( var i = 0; i < entityHandler.entities.length; i++ ) {
+            var p = entityHandler.entities[i];
+            p.draw();
+        }
+    }
+    
 }
-function Entity (type, xPos, yPos, width, height){
+setInterval(function(){entityHandler.createEnemy()},1000);
+
+function Entity (type, xPos, yPos, width, height, direction){
     var cellPoints = getSquareCornersWorld(xPos, yPos, width);
     this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
       new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
@@ -12,21 +48,39 @@ function Entity (type, xPos, yPos, width, height){
       new SAT.Vector(cellPoints.point3.x, cellPoints.point3.y),
       new SAT.Vector(cellPoints.point4.x, cellPoints.point4.y)
     ]);
+
     this.height = height;
     this.screenHeight = worldDistanceToScreenDistance(height);
     this.width = width;
-    this.vx = (Math.random()-0.5)*5;
-    this.vy = (Math.random()-0.5)*5;
+
+    this.speed = 2;
+    this.direction = direction;
+    this.theta = this.direction * Math.PI / 180;
+    this.vx = this.speed * Math.cos(this.theta);
+    this.vy = this.speed * Math.sin (this.theta);
+    
     this.jumpHeight = this.height/2;
     this.jumpStep = Math.random();
     this.jumpSpeed = 0.2;
-	this.speed = Math.random()+1;
+	//this.speed = Math.random()+1;
 	this.type = type;
     this.fillColor = "rgba(0, 0, 255, 1)";
     this.strokeColor = "rgba(0, 0, 255, 1)";
     this.leftColor = "rgba(0, 0, 225, 1)";
     this.rightColor = "rgba(0, 0, 200, 1)";
     this.shadowColor = "rgba(0, 0, 0, 0.2)";
+    
+    this.move = function(){
+        //move the entity
+        //TODO GÖR ENKLARE FÖR ENEMIES SOM ALLTID RÖR SIG I EN RIKTNING
+        this.theta = this.direction * Math.PI / 180;
+        this.vx = this.speed * Math.cos(this.theta);
+        this.vy = this.speed * Math.sin (this.theta);
+        
+        this.hitBox.pos.x += this.vx;
+        this.hitBox.pos.y += this.vy;
+        this.jumpStep += this.jumpSpeed;
+    }
     
     // Draw the entity
     this.draw = function (){
@@ -108,11 +162,4 @@ function Entity (type, xPos, yPos, width, height){
         }
         return square;
     }
-    
-    // Add to entity-list
-	entities.push(this);
 }
-
-//createPlayer(Math.random() * mapWidth, Math.random() * mapHeight, "player", Math.random() * 40, Math.random() * 60);	
-player = new Entity("player", 10, 10, 15, 15);
-poop = new Entity("player", 15, 15, 50, 50);
