@@ -8,6 +8,13 @@ else if(color instanceof Object &amp;&amp; color.r) {
                 }
                 return result;
 */
+function compareZ(a,b) {
+  if (a.z < b.z)
+     return -1;
+  if (a.z > b.z)
+    return 1;
+  return 0;
+}
 
 function randNum( min, max ) {
     return Math.random() * ( max - min ) + min;

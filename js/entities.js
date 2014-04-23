@@ -2,11 +2,18 @@ var entityHandler = new EntityHandler();
 var player = entityHandler.createPlayer();
 
 function EntityHandler(){
-    
+    this.maxEnemySize = 60;
+    this.minEnemySize = 20;
     this.entities = [];
     this.createEnemy = function(){
         //create enemy
-        var enemy = new Entity("enemy", 15, 15, 50, 50, 90, 2);
+        var xPos = Math.random()*mapWidth;
+        var yPos = 0;
+        var height = (Math.random()*(this.maxEnemySize-this.minEnemySize))+this.minEnemySize;
+        var direction = 90; //screen south west
+        var speed = 2;
+            
+        var enemy = new Entity("enemy", xPos, yPos, 0, height, direction, speed);
         this.entities.push(enemy);
     }
     this.createPlayer = function(){
@@ -14,6 +21,9 @@ function EntityHandler(){
         this.entities.push(player);
     }
     this.update = function(){
+        //sort by depth
+        this.entities.sort(compareZ);
+        //move all entities
         for ( var i = 0; i < entityHandler.entities.length; i++ ) {
             var p = entityHandler.entities[i];
             p.move();
@@ -28,9 +38,6 @@ function EntityHandler(){
             }
         */
     }
-    this.sort = function(){
-        //sort entities by x+y coord
-    }
     this.draw = function(){
         //draw all entities
         for ( var i = 0; i < entityHandler.entities.length; i++ ) {
@@ -43,7 +50,18 @@ function EntityHandler(){
 setInterval(function(){entityHandler.createEnemy()},1000);
 
 function Entity (type, xPos, yPos, width, height, direction, speed){
-    var cellPoints = getSquareCornersWorld(xPos, yPos, width);
+    
+    this.height = height;
+    this.screenHeight = worldDistanceToScreenDistance(height);
+    if (type == "enemy"){
+        this.width = height/1.5;
+    }
+    else{
+        this.width = height/1.5;
+        //this.width = width;
+    }
+    
+    var cellPoints = getSquareCornersWorld(xPos, yPos, this.width);
     this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
       new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
       new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),
@@ -51,9 +69,9 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
       new SAT.Vector(cellPoints.point4.x, cellPoints.point4.y)
     ]);
 
-    this.height = height;
-    this.screenHeight = worldDistanceToScreenDistance(height);
-    this.width = width;
+    
+    
+    this.z = this.hitBox.pos.x + this.hitBox.pos.y;
 
     this.speed = speed;
     this.direction = direction;
@@ -81,6 +99,7 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
         this.shadowColor = "rgba(0, 0, 0, 0.2)";
     }
     else{
+        console.log("something got fucky with the colors");
         this.fillColor = "rgba(0, 0, 0, 1)";
         this.strokeColor = "rgba(0, 0, 0, 1)";
         this.leftColor = "rgba(0, 0, 0, 1)";
@@ -90,16 +109,35 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
     
     this.move = function(){
         //move the entity
-        //TODO GÖR ENKLARE FÖR ENEMIES SOM ALLTID RÖR SIG I EN RIKTNING
         if (this.type == "enemy"){
             this.hitBox.pos.x += this.vx;
             this.hitBox.pos.y += this.vy;
             this.jumpStep += this.jumpSpeed;
+            this.z = this.hitBox.pos.x + this.hitBox.pos.y;
         }
         else if (this.type == "player"){
-            if(keyY != 0 || keyX != 0){
+            var y = 0;
+                var x = 0;
+                
+                if (left){
+                    x -= 1;
+                }
+                if (right){
+                    x += 1;
+                }
+                if (up){
+                    y -= 1;
+                }
+                if (down){
+                    y += 1;
+                }
+            if(y != 0 || x != 0){
                 // get direction
-                var screenDirection = Math.atan2(keyY,keyX);
+                //var screenDirection = Math.atan2(keyY,keyX);
+                
+                
+                
+                var screenDirection = Math.atan2(y,x);
                 screenDirection *= 180/Math.PI;
                 //convert to world direction
                 this.direction = screenDirection - 45;
@@ -120,6 +158,7 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
                 camera.y = cameraPos["y"] -canvas.height/2;
             }
             this.jumpStep += this.jumpSpeed;
+            this.z = this.hitBox.pos.x + this.hitBox.pos.y;
         }
         else{
             console.log("invalid entity type, cant move ffs");
