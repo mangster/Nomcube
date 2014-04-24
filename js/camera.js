@@ -1,10 +1,14 @@
-var camera = {
-    x: -canvas.width,
-    y: -canvas.height,
-    vx: 0,
-    vy: 0,
-    speed: 400,
-    update: function() {
+function Camera() {
+    var screenPos = {};
+    var worldPos = {};
+    //TODO byt ut mot dynamisk koll av players position
+    worldPos["x"] = 200;
+    worldPos["y"] = 200;
+    screenPos = worldToScreen(worldPos);
+
+    this.x = screenPos.x -canvas.width/2;
+    this.y = screenPos.y -canvas.height/2;
+    this.update = function() {
         //this.x = player.hitBox.pos.x;
         //this.y = player.hitBox.pos.y;
         
@@ -12,3 +16,4 @@ var camera = {
         //this.y += this.vy / FPS;
     }
 }
+var camera = new Camera();

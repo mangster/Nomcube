@@ -1,66 +1,12 @@
-var entityHandler = new EntityHandler();
-var player = entityHandler.createPlayer();
+function Entity (type, xPos, yPos, volume, direction, speed, heightScale){  
+    //this.width = width;
+    this.heightScale = heightScale;
+    this.volume = volume;
+    this.width = Math.pow((this.volume / this.heightScale), 1/3);
+    
+    this.height = this.width * this.heightScale;
+    this.screenHeight = worldDistanceToScreenDistance(this.height);
 
-function EntityHandler(){
-    this.maxEnemySize = 60;
-    this.minEnemySize = 20;
-    this.entities = [];
-    this.createEnemy = function(){
-        //create enemy
-        var xPos = Math.random()*mapWidth;
-        var yPos = 0;
-        var height = (Math.random()*(this.maxEnemySize-this.minEnemySize))+this.minEnemySize;
-        var direction = 90; //screen south west
-        var speed = 2;
-            
-        var enemy = new Entity("enemy", xPos, yPos, 0, height, direction, speed);
-        this.entities.push(enemy);
-    }
-    this.createPlayer = function(){
-        player = new Entity("player", 200, 200, 30, 50, 90, 5);
-        this.entities.push(player);
-    }
-    this.update = function(){
-        //sort by depth
-        this.entities.sort(compareZ);
-        //move all entities
-        for ( var i = 0; i < entityHandler.entities.length; i++ ) {
-            var p = entityHandler.entities[i];
-            p.move();
-        }
-        
-        //check collision
-        /*
-        var response = new SAT.Response();
-            var collided = SAT.testPolygonPolygon(p.hitBox, tile, response);
-            if (collided){
-                //tile.collided = true;
-            }
-        */
-    }
-    this.draw = function(){
-        //draw all entities
-        for ( var i = 0; i < entityHandler.entities.length; i++ ) {
-            var p = entityHandler.entities[i];
-            p.draw();
-        }
-    }
-    
-}
-setInterval(function(){entityHandler.createEnemy()},1000);
-
-function Entity (type, xPos, yPos, width, height, direction, speed){
-    
-    this.height = height;
-    this.screenHeight = worldDistanceToScreenDistance(height);
-    if (type == "enemy"){
-        this.width = height/1.5;
-    }
-    else{
-        this.width = height/1.5;
-        //this.width = width;
-    }
-    
     var cellPoints = getSquareCornersWorld(xPos, yPos, this.width);
     this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
       new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
@@ -106,6 +52,34 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
         this.rightColor = "rgba(0, 0, 0, 1)";
         this.shadowColor = "rgba(0, 0, 0, 0.2)";
     }
+    this.getScreenPos = function(){
+        var worldPos = {};
+        worldPos["x"] = this.hitBox.pos.x;
+        worldPos["y"] = this.hitBox.pos.y;
+        return worldToScreen(worldPos);
+    }
+    this.getWidthFromVolume = function (volume){
+        return Math.pow((volume / this.heightScale), 1/3);
+    }
+    this.getVolumeFromWidth = function(width){
+        return width * width * width * this.heightScale;
+    }
+    //this.volume = this.getVolumeFromWidth (this.width);
+        
+    this.scale = function(scaleFactor){
+        //set new volume
+        this.volume *= scaleFactor;
+        this.width = this.getWidthFromVolume(this.volume);
+        this.height = this.width * this.heightScale;
+        this.screenHeight = worldDistanceToScreenDistance(this.height);
+        var cellPoints = getSquareCornersWorld(this.hitBox.pos.x, this.hitBox.pos.y, this.width);
+        this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
+          new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
+          new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),
+          new SAT.Vector(cellPoints.point3.x, cellPoints.point3.y),
+          new SAT.Vector(cellPoints.point4.x, cellPoints.point4.y)
+        ]);
+    }
     
     this.move = function(){
         //move the entity
@@ -117,28 +91,25 @@ function Entity (type, xPos, yPos, width, height, direction, speed){
         }
         else if (this.type == "player"){
             var y = 0;
-                var x = 0;
-                
-                if (left){
-                    x -= 1;
-                }
-                if (right){
-                    x += 1;
-                }
-                if (up){
-                    y -= 1;
-                }
-                if (down){
-                    y += 1;
-                }
+            var x = 0;
+
+            if (left){
+                x -= 1;
+            }
+            if (right){
+                x += 1;
+            }
+            if (up){
+                y -= 1;
+            }
+            if (down){
+                y += 1;
+            }
             if(y != 0 || x != 0){
                 // get direction
-                //var screenDirection = Math.atan2(keyY,keyX);
-                
-                
-                
                 var screenDirection = Math.atan2(y,x);
                 screenDirection *= 180/Math.PI;
+                
                 //convert to world direction
                 this.direction = screenDirection - 45;
                 

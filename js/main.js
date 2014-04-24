@@ -3,6 +3,9 @@ var canvas = document.getElementById( "canvas" );
 // Get our 2D context for drawing
 var ctx = canvas.getContext( "2d" );
 
+ctx.canvas.width = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+
 // Frames-per-second
 var FPS = 30;
 

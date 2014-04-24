@@ -32,6 +32,7 @@ function updateMap(){
 }
 
 function drawMap(){
+    //TODO flytta ut?
 	ctx.canvas.width = window.innerWidth;
 	ctx.canvas.height = window.innerHeight;
 	
