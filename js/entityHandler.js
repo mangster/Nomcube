@@ -7,7 +7,7 @@ entityHandler.createPlayer();
 //Entity handler class
 function EntityHandler(){
     this.maxEnemySize = 50000;
-    this.minEnemySize = 20000;
+    this.minEnemySize = 10000;
     this.entities = [];
     this.createEnemy = function(){
         //create enemy
@@ -42,19 +42,22 @@ function EntityHandler(){
                 var response = new SAT.Response();
                 var collided = SAT.testPolygonPolygon(this.player.hitBox, p.hitBox, response);
                 if (collided){
-                    p.fillColor = "red";
+                    if (p.volume < this.player.volume){
+                        p.fillColor = "red";
+                        this.player.addVolume(p.volume);
+                        this.minEnemySize += p.volume;
+                        this.maxEnemySize += p.volume;
+
+                        this.entities.splice(i,1);
+                    }
+                    else{
+                        this.player.fillColor = "black";
+                    }
+                    
                 }
             }
         }
 
-        //check collision
-        /*
-        var response = new SAT.Response();
-            var collided = SAT.testPolygonPolygon(p.hitBox, tile, response);
-            if (collided){
-                //tile.collided = true;
-            }
-        */
     }
     this.kill = function(entity){
         //remove entity from entity list

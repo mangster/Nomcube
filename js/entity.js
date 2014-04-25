@@ -66,9 +66,23 @@ function Entity (type, xPos, yPos, volume, direction, speed, heightScale){
     }
     //this.volume = this.getVolumeFromWidth (this.width);
         
-    this.scale = function(scaleFactor){
+    this.scaleVolume = function(scaleFactor){
         //set new volume
         this.volume *= scaleFactor;
+        this.width = this.getWidthFromVolume(this.volume);
+        this.height = this.width * this.heightScale;
+        this.screenHeight = worldDistanceToScreenDistance(this.height);
+        var cellPoints = getSquareCornersWorld(this.hitBox.pos.x, this.hitBox.pos.y, this.width);
+        this.hitBox = new SAT.Polygon(new SAT.Vector(cellPoints.center.x, cellPoints.center.y), [
+          new SAT.Vector(cellPoints.point1.x, cellPoints.point1.y),
+          new SAT.Vector(cellPoints.point2.x, cellPoints.point2.y),
+          new SAT.Vector(cellPoints.point3.x, cellPoints.point3.y),
+          new SAT.Vector(cellPoints.point4.x, cellPoints.point4.y)
+        ]);
+    }
+    this.addVolume = function(volume){
+        //set new volume
+        this.volume += volume;
         this.width = this.getWidthFromVolume(this.volume);
         this.height = this.width * this.heightScale;
         this.screenHeight = worldDistanceToScreenDistance(this.height);
