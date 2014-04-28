@@ -1,4 +1,4 @@
-function Entity (type, xPos, yPos, volume, direction, speed, heightScale){  
+function Entity (type, xPos, yPos, volume, direction, speed, heightScale, jumpHeight, jumpSpeed){  
     //this.width = width;
     this.heightScale = heightScale;
     this.volume = volume;
@@ -25,9 +25,9 @@ function Entity (type, xPos, yPos, volume, direction, speed, heightScale){
     this.vx = this.speed * Math.cos(this.theta);
     this.vy = this.speed * Math.sin (this.theta);
     
-    this.jumpHeight = this.height/2;
+    this.jumpHeight = jumpHeight;
     this.jumpStep = Math.random();
-    this.jumpSpeed = 0.2;
+    this.jumpSpeed = jumpSpeed;
 
 	this.type = type;
     if (this.type == "enemy"){

@@ -1,3 +1,16 @@
+// Get the canvas element
+var canvas = document.getElementById( "canvas" );
+// Get our 2D context for drawing
+var ctx = canvas.getContext( "2d" );
+
+ctx.canvas.width = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+var blockSize = 50;
+var cellWidth = blockSize;
+var cellHeight = blockSize;
+var mapWidth = 1000;
+var mapHeight = 1000;
+
 //Skapa random karta
 var grid = generateRandom(mapWidth/blockSize, mapHeight/blockSize, 0.1);
 var map = [];

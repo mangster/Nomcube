@@ -6,23 +6,37 @@ entityHandler.createPlayer();
 
 //Entity handler class
 function EntityHandler(){
-    this.maxEnemySize = 50000;
+    this.maxEnemySize = 150000;
     this.minEnemySize = 10000;
     this.entities = [];
     this.createEnemy = function(){
         //create enemy
         var xPos = Math.random()*mapWidth;
         var yPos = 0;
-        var width = (Math.random()*(this.maxEnemySize-this.minEnemySize))+this.minEnemySize;
+        var size = (Math.random()*(this.maxEnemySize-this.minEnemySize))+this.minEnemySize;
         var direction = 90; //screen south west
-        var speed = 2;
+        var speed = (size/3) / this.minEnemySize;
         var heightScale = 1.5;
+        var width = Math.pow((size / heightScale), 1/3);
+        var height = width * heightScale;
+        var jumpHeight = height/2;
+        var jumpSpeed = 0.2;
             
-        var enemy = new Entity("enemy", xPos, yPos, width, direction, speed, heightScale);
+        var enemy = new Entity("enemy", xPos, yPos, size, direction, speed, heightScale, jumpHeight, jumpSpeed);
         this.entities.push(enemy);
     }
     this.createPlayer = function(){
-        this.player = new Entity("player", 200, 200, 30000, 90, 5, 1.5);
+        var xPos = 200
+        var yPos = 200
+        var size = 30000;
+        var direction = 90;
+        var speed = 5;
+        var heightScale = 1.5;
+        var width = Math.pow((size / heightScale), 1/3);
+        var height = width * heightScale;
+        var jumpHeight = height/2;
+        var jumpSpeed = 0.2;
+        this.player = new Entity("player", xPos, yPos, size, direction, speed, heightScale, jumpHeight, jumpSpeed);
 
         this.entities.push(this.player);
     }
@@ -45,8 +59,9 @@ function EntityHandler(){
                     if (p.volume < this.player.volume){
                         p.fillColor = "red";
                         this.player.addVolume(p.volume);
-                        this.minEnemySize += p.volume;
-                        this.maxEnemySize += p.volume;
+                        //this.minEnemySize += p.volume;
+                        //this.maxEnemySize += p.volume;
+                        this.maxEnemySize *= 1.1;
 
                         this.entities.splice(i,1);
                     }

@@ -1,51 +1,22 @@
-// Get the canvas element
-var canvas = document.getElementById( "canvas" );
-// Get our 2D context for drawing
-var ctx = canvas.getContext( "2d" );
-
-ctx.canvas.width = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
-
 // Frames-per-second
 var FPS = 30;
-
-var blockSize = 50;
-var cellWidth = blockSize;
-var cellHeight = blockSize;
-var mapWidth = 1000;
-var mapHeight = 1000;
 var isometric = true;
 
-// Game loop draw function
-function draw() {
-	ctx.clearRect( 0, 0, canvas.width, canvas.height );
+function render() {
+    ctx.clearRect( 0, 0, canvas.width, canvas.height );
 	drawMap();
-	//drawBullets();
-    //drawEntities();
     entityHandler.draw();
-	//drawTowers();
 	drawMenu();
-	
-	
-	
+     
+    requestAnimationFrame( render );
 }
-// Game loop update function
-function update() {
-	camera.update();
-	//updateTowers();
-	updateMap();
-	//updateBullets();
-	//updateEnemies();
-    //updateEntities();
+ 
+function gameStep() {
+    camera.update(); 
+    updateMap();
     entityHandler.update();
+    setTimeout( gameStep, 1000 / FPS );
 }
 
-//TODO ändra till requestanimationframe?
-
-function tick() {
-    draw();
-    update(); 
-	
-}
-
-setInterval( tick, 1000 / FPS );
+render()
+gameStep()

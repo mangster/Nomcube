@@ -5,7 +5,7 @@ function Camera() {
     worldPos["x"] = 200;
     worldPos["y"] = 200;
     screenPos = worldToScreen(worldPos);
-
+    //console.log(canvas.width);
     this.x = screenPos.x -canvas.width/2;
     this.y = screenPos.y -canvas.height/2;
     this.update = function() {
