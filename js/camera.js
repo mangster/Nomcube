@@ -2,8 +2,8 @@ function Camera() {
     var screenPos = {};
     var worldPos = {};
     //TODO byt ut mot dynamisk koll av players position
-    worldPos["x"] = 200;
-    worldPos["y"] = 200;
+    worldPos["x"] = 0;
+    worldPos["y"] = 0;
     screenPos = worldToScreen(worldPos);
     //console.log(canvas.width);
     this.x = screenPos.x -canvas.width/2;

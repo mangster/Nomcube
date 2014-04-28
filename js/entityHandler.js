@@ -26,8 +26,8 @@ function EntityHandler(){
         this.entities.push(enemy);
     }
     this.createPlayer = function(){
-        var xPos = 200
-        var yPos = 200
+        var xPos = 0;
+        var yPos = 0;
         var size = 30000;
         var direction = 90;
         var speed = 5;

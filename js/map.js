@@ -5,12 +5,108 @@ var ctx = canvas.getContext( "2d" );
 
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
-var blockSize = 50;
-var cellWidth = blockSize;
-var cellHeight = blockSize;
+
+
 var mapWidth = 1000;
 var mapHeight = 1000;
 
+
+
+var map = new Map();
+
+map.createTile("basic", -50, 0);
+map.createTile("basic", -50, -50);
+map.createTile("basic", -50, 50);
+map.createTile("basic", 50, -50);
+map.createTile("basic", 0, -50);
+map.createTile("basic", 0, 0);
+map.createTile("basic", 50, 0);
+map.createTile("basic", 50, 50);
+map.createTile("basic", 0, 50);
+
+
+
+
+//Map Class
+function Map(){
+    this.tileSize = 50;
+    this.tiles = [];
+
+    
+    
+    this.createTile = function(type, xPos, yPos){
+        var hasHidden = false;
+        for (var i = 0; i < this.tiles.length; i++){
+            if (this.tiles[i].hitBox.pos.x == xPos && this.tiles[i].hitBox.pos.y == yPos){
+                this.tiles[i].hiddenToBasic();
+                hasHidden = true;
+            }
+        }
+        if (!hasHidden){
+            //create tile 
+            var tile = new Tile("basic", xPos, yPos, this.tileSize, this.tileSize/3);
+
+            this.tiles.push(tile);
+        }
+        //create neighbour grid
+        var neighbours = [];
+        for (var j = 0; j <3; j++){
+            var row = [];
+            for (var k = 0; k < 3; k++){
+                var neighbour = [];
+                neighbour.hasTile = false;
+                neighbour.pos = {};
+                neighbour.pos ={ "x": xPos + (this.tileSize * (k-1)), "y": yPos + (this.tileSize * (j-1))};
+                row.push(neighbour);
+            }
+            neighbours.push(row);
+        }
+
+        for (var j = 0; j <3; j++){
+            for (var k = 0; k < 3; k++){
+                var neighbour = neighbours[j][k];
+                for (var i = 0;  i < this.tiles.length; i++){
+                    var compareTile = this.tiles[i];
+                    var point = new SAT.Vector(neighbour.pos.x, neighbour.pos.y);
+                    var hasNeighbour = SAT.pointInPolygon(point, compareTile.hitBox);
+                    if (hasNeighbour){
+                        neighbours[j][k].hasTile = true;
+                    }
+                }
+            }
+        }
+
+        for (var j = 0; j <3; j++){
+            for (var k = 0; k < 3; k++){
+                var neighbour = neighbours[j][k];
+                if (neighbour.hasTile == false){
+                    var hiddenTile = new Tile("hidden", neighbour.pos.x , neighbour.pos.y, this.tileSize, this.tileSize/3);
+                    this.tiles.push(hiddenTile);
+                }
+            }
+        }
+    }
+
+    this.update = function(){
+        //sort by depth
+        this.tiles.sort(compareZ);
+        //move all entities
+        for ( var i = 0; i < this.tiles.length; i++ ) {
+            var p = this.tiles[i];
+            //p.move();
+        }
+    }
+
+    this.draw = function(){
+        //draw all tiles
+        for ( var i = 0; i < this.tiles.length; i++ ) {
+            var p = this.tiles[i];
+            p.draw();
+        }
+    }
+}
+
+/*
 //Skapa random karta
 var grid = generateRandom(mapWidth/blockSize, mapHeight/blockSize, 0.1);
 var map = [];
@@ -39,9 +135,7 @@ for (var i = 0; i < grid.nodes.length; i++){
 	map.push(row);
 }
 
-function updateMap(){
-	/*for ( var i = 0; i < grid.length; i++ ) {
-    }*/
+
 }
 
 function drawMap(){
@@ -57,12 +151,6 @@ function drawMap(){
 				drawScreenTile(tile);
 			}
 		}
-		/*for (var i = 0; i < grid.nodes.length; i++){
-			for (var j = grid.nodes[i].length-1; j >= 0; j--){
-				var tile = grid.nodes[i][j];
-				drawTile(tile);
-			}
-		}*/
 	}
 	else{
 		for (var i = 0; i < map.length; i++){
@@ -73,3 +161,4 @@ function drawMap(){
 		}
 	}
 }
+*/

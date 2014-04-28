@@ -4,7 +4,7 @@ var isometric = true;
 
 function render() {
     ctx.clearRect( 0, 0, canvas.width, canvas.height );
-	drawMap();
+	map.draw();
     entityHandler.draw();
 	drawMenu();
      
@@ -13,7 +13,7 @@ function render() {
  
 function gameStep() {
     camera.update(); 
-    updateMap();
+    map.update();
     entityHandler.update();
     setTimeout( gameStep, 1000 / FPS );
 }
