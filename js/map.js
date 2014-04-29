@@ -61,7 +61,8 @@ function Map(){
             }
             neighbours.push(row);
         }
-
+        
+        // Check which neighbours have a tile
         for (var j = 0; j <3; j++){
             for (var k = 0; k < 3; k++){
                 var neighbour = neighbours[j][k];
@@ -75,12 +76,12 @@ function Map(){
                 }
             }
         }
-
+        // Create hidden tiles for all neighbours that dont have a tile
         for (var j = 0; j <3; j++){
             for (var k = 0; k < 3; k++){
                 var neighbour = neighbours[j][k];
                 if (neighbour.hasTile == false){
-                    var hiddenTile = new Tile("hidden", neighbour.pos.x , neighbour.pos.y, this.tileSize, this.tileSize/3);
+                    var hiddenTile = new Tile("edge", neighbour.pos.x , neighbour.pos.y, this.tileSize, this.tileSize/3);
                     this.tiles.push(hiddenTile);
                 }
             }

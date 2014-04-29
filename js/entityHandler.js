@@ -52,6 +52,8 @@ function EntityHandler(){
                 //kill entity
                 this.entities.splice(i,1);
             }
+            
+            // Check for collision with player
             if(p.type != "player"){
                 var response = new SAT.Response();
                 var collided = SAT.testPolygonPolygon(this.player.hitBox, p.hitBox, response);
@@ -69,6 +71,20 @@ function EntityHandler(){
                         this.player.fillColor = "black";
                     }
                     
+                }
+            }
+            
+            // Check for collision with edge tiles
+            if(p.type == "player"){
+                for (var j = 0;  j < map.tiles.length; j++){
+                    var tile = map.tiles[j];
+                    if (tile.type == "edge"){
+                        var response = new SAT.Response();
+                        var collided = SAT.testPolygonPolygon(this.player.hitBox, tile.hitBox, response);
+                        if (collided){
+                            map.createTile("basic", tile.hitBox.pos.x, tile.hitBox.pos.y); 
+                        }
+                    }
                 }
             }
         }

@@ -21,7 +21,7 @@ function Tile (type, xPos, yPos, width, height){
         this.leftColor = "rgba(175, 175, 175, 1)";
         this.rightColor = "rgba(150, 150, 150, 1)";
     }
-    else if (this.type == "hidden"){
+    else if (this.type == "edge"){
         this.fillColor = "rgba(200, 200, 200, 0)";
         this.strokeColor = "rgba(100, 100, 100, 1)";
         this.leftColor = "rgba(175, 175, 175, 0)";
